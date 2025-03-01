@@ -90,18 +90,12 @@
 
         \item A vertex $C_i$ for each clause $c_j$ ($M$ in total, which similarly can be created in linear time).
 
-        \item $N$ vertices $X_s^t$ for each variable $x_s$ ($N^2$ in total, which can be created in quadratic time).
     \end{itemize}
 
     Next, I define the edges $E$ of $G$ as:
     \begin{itemize}
         \item $\left( L^i_u, C_i \right)$ for $1 \leq u \leq 3,\, 1 \leq i \leq M$
         (each literal points to the clauses it appears in, which we can construct in linear time).
-
-        \item $\left(L_s, X^t_s \right)$ and $\left(L_{s + N}, X^t_s \right)$ for
-        $1 \leq s \leq N$ and $1 \leq t \leq N$
-        (each literal points to the $N$ copies of the corresponding variable,
-        which we can construct in quadratic time).
 
         \item $\left( L_s, L_{s+N} \right)$ and $\left( L_{s+N}, L_{s} \right)$ for $1 \leq s \leq N$
         (each literal points to its negation, which we can construct in linear time).
@@ -119,20 +113,17 @@
         I will show that the set $S \coloneqq \{l_s | B_s = \text{True}\} \cup \{l_{s+N} | B_s = \text{False}\}$,
         which has size $N=k$, is dominating:
         \begin{itemize}
-            \item All $L_j$ are either in $S$ or pointed to by $ \overline{L_j} \coloneqq L_{j \pm N}$.
-            \item All $C_i$ are pointed to by at their literals, at least one of which is in $S$.
-            \item All $X_s^t$ are pointed to by $L_s$ and $L_{s+N}$, exactly one of which is in $S$.
+            \item All $L_j$ are either in $S$ or pointed to by $ \overline{L_j} \coloneqq L_{j \pm N} \in S$.
+            \item All $C_i$ are pointed to by their literals, at least one of which is in $S$.
         \end{itemize}
 
         \item[$\Longrightarrow\text{)}$] Suppose there is a dominating set $S$ of size at most $k$.
-        for each variable $x_s$, all $X^t_s$ must either be in $S$ or pointed to by an element of $S$
-        (that is, one of $X^t_s, L_s, L_{s+N}$ is in $S$). But if for all $t$ $X^t_s \in S$,
-        then $k$ elements of $S$ are already decided, and neither of them points to any other elment.
-        In particular, $L_s$ is not pointed to by any element of $S$, against the assumption.
-        Therefore, for all $1 \leq s \leq N = k$, at least one of $L_s, L_{s+N}$ is in $S$.
-        In fact, \emph{exactly} one of them is in $S$, because otherwise $S$ would have more than $k$ elements.
+        for each variable $x_s$, $L_s$ must either be in $S$ or pointed to by an element of $S$
+        (that is, one of $L_s, L_{s+N}$ is in $S$). In fact, because there are $N=k$ variables,
+        \emph{exactly} one of them is in $S$, because otherwise $S$ would have more than $k$ elements.
+        Furthermore, $S$ only contains vertices of this form.
 
-        This means that can define a variable assignment $x_s = B_s$ where $B_s = \text{True}$
+        This means that a variable assignment $x_s = B_s$ where $B_s = \text{True}$
         if $L_s \in S$ and $B_s = \text{False}$ if $L_{s+N} \in S$ can be defined.
         To show that this assignment satisfies $F$, note that for each clause $c_i$, there is
         a literal $l_j$ such that $L_j$ points to $C_i$ and $L_j \in S$.
