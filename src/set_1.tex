@@ -120,8 +120,8 @@
         \item[$\Longrightarrow\text{)}$] Suppose there is a dominating set $S$ of size at most $k$.
         for each variable $x_s$, $L_s$ must either be in $S$ or pointed to by an element of $S$
         (that is, one of $L_s, L_{s+N}$ is in $S$). In fact, because there are $N=k$ variables,
-        \emph{exactly} one of them is in $S$, because otherwise $S$ would have more than $k$ elements.
-        Furthermore, $S$ only contains vertices of this form.
+        \emph{exactly} one of them is in $S$ (otherwise $S$ would have more than $k$ elements).
+        Furthermore, $S$ only contains vertices of the form $L_j$ (and not $C_i$).
 
         This means that a variable assignment $x_s = B_s$ where $B_s = \text{True}$
         if $L_s \in S$ and $B_s = \text{False}$ if $L_{s+N} \in S$ can be defined.
