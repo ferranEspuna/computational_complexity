@@ -1,0 +1,153 @@
+\documentclass{amsart}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{mathtools}
+
+\newtheorem*{theirtheorem}{Theorem}
+\newtheorem*{theirproposition}{Proposition}
+
+
+\theoremstyle{plain}
+\newtheorem*{theorem}{\textbf{Theorem}}
+\newtheorem*{lemma}{\textbf{Lemma}}
+\newtheorem*{corollary}{\textbf{Corollary}}
+\newtheorem*{proposition}{\textbf{Proposition}}
+\newtheorem*{claim}{\textbf{Claim}}
+\newtheorem*{conjecture}{\textbf{Conjecture}}
+
+\theoremstyle{definition}
+\newtheorem*{rk}{\textbf{Remark}}
+
+\newcommand{\Summ}[1]{\underset{#1}{\sum}}
+\newcommand{\sti}[2]{\left\{\begin{array}{c} #1 \\ #2 \end{array}\right\}}
+
+\newcommand{\diam}{\emph{diam}}
+\newcommand{\conv}{\mbox{Conv}}
+\newcommand{\C}{\mathcal {C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\D}{\mathcal{D}}
+
+\newcommand{\ov}[1]{\overline{#1}}
+
+\newcommand{\nn}{\nonumber}
+
+\def\st{2}
+
+\thispagestyle{empty}
+
+\usepackage{enumitem}
+
+\usepackage{parskip}
+
+
+\begin{document}
+
+    {\Large MIRI, MAMME, MPAL -- Computational Complexity -- Homework 1}
+
+    \vspace{0.5cm}
+
+    \hrule
+
+    \vspace{0.5cm}
+
+    \textbf{Exercise 1:} Prove that \verb|DIRECTED DOMINATING SET| is NP-Hard through a series of Karp reductions
+    starting at \verb|3SAT|.
+
+    \textbf{Solution:} I will first introduce some notation.
+    Let $F$ be a boolean formula with $N$ variables and $M$ CNF
+    clauses with $3$ literals each.
+    I will denote the variables as $x_1, x_2, \ldots, x_N$ and the clauses as $c_1, c_2, \ldots, c_M$.
+    For convenience, I will enumerate all possible literals as $l_j = x_j, l_{N+j} = \overline{x_j}$
+    (there are $2N$ of them).
+    I will denote
+    $c_i = \left( l_{j_{i, 1}}, l_{j_{i, 2}}, l_{j_{i, 3}} \right) =
+    \left( l^i_1, l^i_2, l^i_3 \right)
+    \in \{l_1, \, \dots \, , l_{2N}\}^3$.
+
+    I will now construct a directed graph $G = (V, E)$ and $k \in \N$ such that
+    $G$ contains a dominating set of size at most $k$ if and only if $F$ is satisfiable.
+    Furthermore, the construction of the graph will clearly be polynomial in time,
+    thus providing the Karp reduction we need directly.
+
+    First, I define the vertices $V$ of $G$ as:
+    \begin{itemize}
+        \item A vertex $L_j$ for each literal $l_j$ ($2N$ in total, which can be created in linear time by scanning $F$).
+        For convenience, I will denote $L^i_u \coloneqq L_{j_{i, u}}$.
+
+        \item A vertex $C_i$ for each clause $c_j$ ($M$ in total, which similarly can be created in linear time).
+
+        \item $N$ vertices $X_s^t$ for each variable $x_s$ ($N^2$ in total, which can be created in quadratic time).
+    \end{itemize}
+
+    Next, I define the edges $E$ of $G$ as:
+    \begin{itemize}
+        \item $\left( L^i_u, C_i \right)$ for $1 \leq u \leq 3,\, 1 \leq i \leq M$
+        (each literal points to the clauses it appears in, which we can construct in linear time).
+
+        \item $\left(L_s, X^t_s \right)$ and $\left(L_{s + N}, X^t_s \right)$ for
+        $1 \leq s \leq N$ and $1 \leq t \leq N$
+        (each literal points to the $N$ copies of the corresponding variable,
+        which we can construct in quadratic time).
+
+        \item $\left( L_s, L_{s+N} \right)$ and $\left( L_{s+N}, L_{s} \right)$ for $1 \leq s \leq N$
+        (each literal points to its negation, which we can construct in linear time).
+    \end{itemize}
+
+    Finally, I define $k = N$.
+    It remains to be proven that $G$ has a dominating set of size $k \iff F$ is satisfiable:
+
+    % prove both implications separately
+
+    \begin{itemize}
+
+        \item[$\Longleftarrow\text{)}$] Suppose we have an assignment $x_s = B_s \in \{\text{True}, \text{False}\}$
+        that satisfies $F$.
+        I will show that the set $S \coloneqq \{l_s | B_s = \text{True}\} \cup \{l_{s+N} | B_s = \text{False}\}$,
+        which has size $N=k$, is dominating:
+        \begin{itemize}
+            \item All $L_j$ are either in $S$ or pointed to by $ \overline{L_j} \coloneqq L_{j \pm N}$.
+            \item All $C_i$ are pointed to by at their literals, at least one of which is in $S$.
+            \item All $X_s^t$ are pointed to by $L_s$ and $L_{s+N}$, exactly one of which is in $S$.
+        \end{itemize}
+
+        \item[$\Longrightarrow\text{)}$] Suppose there is a dominating set $S$ of size at most $k$.
+        for each variable $x_s$, all $X^t_s$ must either be in $S$ or pointed to by an element of $S$
+        (that is, one of $X^t_s, L_s, L_{s+N}$ is in $S$). But if for all $t$ $X^t_s \in S$,
+        then $k$ elements of $S$ are already decided, and neither of them points to any other elment.
+        In particular, $L_s$ is not pointed to by any element of $S$, against the assumption.
+        Therefore, for all $1 \leq s \leq N = k$, at least one of $L_s, L_{s+N}$ is in $S$.
+        In fact, \emph{exactly} one of them is in $S$, because otherwise $S$ would have more than $k$ elements.
+
+        This means that can define a variable assignment $x_s = B_s$ where $B_s = \text{True}$
+        if $L_s \in S$ and $B_s = \text{False}$ if $L_{s+N} \in S$ can be defined.
+        To show that this assignment satisfies $F$, note that for each clause $c_i$, there is
+        a literal $l_j$ such that $L_j$ points to $C_i$ and $L_j \in S$.
+        If $j \leq N$, this means we have assigned $x_j = \text{True}$ and $x_j = l^i_u$ for $1 \leq i \leq 3$,
+        satisfying the clause.
+        Otherwise, we have assigned $x_{j-N} = \text{False}$ and $\overline{x_{j-N}} = l^i_u$ for $1 \leq i \leq 3$,
+        satisfying the clause as well.
+
+    \end{itemize}
+    
+    \textbf{Exercise 2:}
+
+
+    \nocite{*}
+    \bibliography{main}
+    \bibliographystyle{plain}
+
+\end{document}
