@@ -45,8 +45,6 @@
 
 \newcommand{\nn}{\nonumber}
 
-\def\st{2}
-
 \thispagestyle{empty}
 
 \usepackage{enumitem}
@@ -82,10 +80,15 @@
     $G$ contains a dominating set of size at most $k$ if and only if $F$ is satisfiable.
     Furthermore, the construction of the graph will clearly be polynomial in time,
     thus providing the Karp reduction we need directly.
+    This construction is my own work, although I can't garantee that
+    a similar construction hasn't been used before, as my literature review was not exhaustive,
+    and it seems like a natural approach.
+
 
     First, I define the vertices $V$ of $G$ as:
     \begin{itemize}
-        \item A vertex $L_j$ for each literal $l_j$ ($2N$ in total, which can be created in linear time by scanning $F$).
+        \item A vertex $L_j$ for each literal $l_j$
+        ($2N$ in total, which can be created in linear time by scanning $F$).
         For convenience, I will denote $L^i_u \coloneqq L_{j_{i, u}}$.
 
         \item A vertex $C_i$ for each clause $c_j$ ($M$ in total, which similarly can be created in linear time).
@@ -140,8 +143,7 @@
     
     \textbf{Exercise 2:}
 
-
-    \nocite{*}
+    ~\nocite{*}
     \bibliography{main}
     \bibliographystyle{plain}
 
