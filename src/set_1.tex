@@ -9,7 +9,8 @@
 \usepackage{textcomp}
 \usepackage{graphicx}
 \usepackage{mathtools}
-
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \newtheorem*{theirtheorem}{Theorem}
 \newtheorem*{theirproposition}{Proposition}
 
@@ -41,6 +42,10 @@
 \newcommand{\G}{\mathcal{G}}
 \newcommand{\D}{\mathcal{D}}
 
+\newcommand{\np}{\textbf{NP}}
+\newcommand{\dtime}{\textbf{DTIME}}
+\newcommand{\sol}{\textbf{Solution:\,}}
+
 \newcommand{\ov}[1]{\overline{#1}}
 
 \newcommand{\nn}{\nonumber}
@@ -62,89 +67,197 @@
 
     \vspace{0.5cm}
 
-    \textbf{Exercise 1:} Prove that \verb|DIRECTED DOMINATING SET| is NP-Hard through a series of Karp reductions
-    starting at \verb|3SAT|.
+    \begin{enumerate}[label=\textbf{Exercise \arabic*:}, leftmargin=0cm, labelwidth=-0.2cm, align=left]
 
-    \textbf{Solution:} I will first introduce some notation.
-    Let $F$ be a boolean formula with $N$ variables and $M$ CNF
-    clauses with $3$ literals each.
-    I will denote the variables as $x_1, x_2, \ldots, x_N$ and the clauses as $c_1, c_2, \ldots, c_M$.
-    For convenience, I will enumerate all possible literals as $l_j = x_j, l_{N+j} = \overline{x_j}$
-    (there are $2N$ of them).
-    I will denote
-    $c_i = \left( l_{j_{i, 1}}, l_{j_{i, 2}}, l_{j_{i, 3}} \right) =
-    \left( l^i_1, l^i_2, l^i_3 \right)
-    \in \{l_1, \, \dots \, , l_{2N}\}^3$.
+        \item
+            Prove that \verb|DIRECTED DOMINATING SET| is \np-Hard through a series of Karp reductions
+            starting at \verb|3SAT|.
 
-    I will now construct a directed graph $G = (V, E)$ and $k \in \N$ such that
-    $G$ contains a dominating set of size at most $k$ if and only if $F$ is satisfiable.
-    Furthermore, the construction of the graph will clearly be polynomial in time,
-    thus providing the Karp reduction we need directly.
-    This construction is my own work, although I can't garantee that
-    a similar construction hasn't been used before, as my literature review was not exhaustive,
-    and it seems like a natural approach.
+            \sol I will first introduce some notation.
+            Let $F$ be a boolean formula with $N$ variables and $M$ CNF
+            clauses with $3$ literals each.u,  v
+            I will denote the variables as $x_1, x_2, \ldots, x_N$ and the clauses as $c_1, c_2, \ldots, c_M$.
+            For convenience, I will enumerate all possible literals as $l_j = x_j, l_{N+j} = \overline{x_j}$
+            (there are $2N$ of them).
+            I will denote
+            $c_i = \left( l_{j_{i, 1}}, l_{j_{i, 2}}, l_{j_{i, 3}} \right) =
+            \left( l^i_1, l^i_2, l^i_3 \right)
+            \in \{l_1, \, \dots \, , l_{2N}\}^3$.
+
+            I will now construct a directed graph $D = (V, A)$ and $k \in \N$ such that
+            $D$ contains a dominating set of size at most $k$ if and only if $F$ is satisfiable.
+            Furthermore, the construction of the graph will clearly be polynomial in time,
+            thus providing the Karp reduction we need directly.
+            This construction is my own work, although I can't garantee that
+            a similar construction hasn't been used before, as my literature review was not exhaustive,
+            and it seems like a natural approach.
 
 
-    First, I define the vertices $V$ of $G$ as:
-    \begin{itemize}
-        \item A vertex $L_j$ for each literal $l_j$
-        ($2N$ in total, which can be created in linear time by scanning $F$).
-        For convenience, I will denote $L^i_u \coloneqq L_{j_{i, u}}$.
+            First, I define the vertices $V$ of $D$ as:
+            \begin{itemize}
+                \item A vertex $L_j$ for each literal $l_j$
+                ($2N$ in total, which can be created in linear time by scanning $F$).
+                For convenience, I will denote $L^i_u \coloneqq L_{j_{i, u}}$.
 
-        \item A vertex $C_i$ for each clause $c_j$ ($M$ in total, which similarly can be created in linear time).
+                \item A vertex $C_i$ for each clause $c_j$ ($M$ in total, which similarly can be created in linear time).
 
-    \end{itemize}
+            \end{itemize}
 
-    Next, I define the edges $E$ of $G$ as:
-    \begin{itemize}
-        \item $\left( L^i_u, C_i \right)$ for $1 \leq u \leq 3,\, 1 \leq i \leq M$
-        (each literal points to the clauses it appears in, which we can construct in linear time).
+            Next, I define the edges $A$ of $D$ as:
+            \begin{itemize}
+                \item $\left( L^i_u, C_i \right)$ for $1 \leq u \leq 3,\, 1 \leq i \leq M$
+                (each literal points to the clauses it appears in, which we can construct in linear time).
 
-        \item $\left( L_s, L_{s+N} \right)$ and $\left( L_{s+N}, L_{s} \right)$ for $1 \leq s \leq N$
-        (each literal points to its negation, which we can construct in linear time).
-    \end{itemize}
+                \item $\left( L_s, L_{s+N} \right)$ and $\left( L_{s+N}, L_{s} \right)$ for $1 \leq s \leq N$
+                (each literal points to its negation, which we can construct in linear time).
 
-    Finally, I define $k = N$.
-    It remains to be proven that $G$ has a dominating set of size $k \iff F$ is satisfiable:
+            \end{itemize}
 
-    % prove both implications separately
+            Finally, I define $k = N$.
+            It remains to be proven that $D$ has a dominating set of size $k \iff F$ is satisfiable:
 
-    \begin{itemize}
+            % prove both implications separately
 
-        \item[$\Longleftarrow\text{)}$] Suppose we have an assignment $x_s = B_s \in \{\text{True}, \text{False}\}$
-        that satisfies $F$.
-        I will show that the set $S \coloneqq \{l_s | B_s = \text{True}\} \cup \{l_{s+N} | B_s = \text{False}\}$,
-        which has size $N=k$, is dominating:
-        \begin{itemize}
-            \item All $L_j$ are either in $S$ or pointed to by $ \overline{L_j} \coloneqq L_{j \pm N} \in S$.
-            \item All $C_i$ are pointed to by their literals, at least one of which is in $S$.
-        \end{itemize}
+            \begin{itemize}
 
-        \item[$\Longrightarrow\text{)}$] Suppose there is a dominating set $S$ of size at most $k$.
-        for each variable $x_s$, $L_s$ must either be in $S$ or pointed to by an element of $S$
-        (that is, one of $L_s, L_{s+N}$ is in $S$). In fact, because there are $N=k$ variables,
-        \emph{exactly} one of them is in $S$ (otherwise $S$ would have more than $k$ elements).
-        Furthermore, $S$ only contains vertices of the form $L_j$ (and not $C_i$).
+                \item[$\Leftarrow\text{)}$] Suppose we have an assignment $x_s = B_s \in \{\text{True}, \text{False}\}$
+                that satisfies $F$.
+                I will show that the set $S \coloneqq \{l_s | B_s = \text{True}\} \cup \{l_{s+N} | B_s = \text{False}\}$,
+                which has size $N=k$, is dominating:
+                \begin{itemize}
+                    \item All $L_j$ are either in $S$ or pointed to by $ \overline{L_j} \coloneqq L_{j \pm N} \in S$.
+                    \item All $C_i$ are pointed to by their literals, at least one of which is in $S$.
+                \end{itemize}
 
-        This means that a variable assignment $x_s = B_s$ where $B_s = \text{True}$
-        if $L_s \in S$ and $B_s = \text{False}$ if $L_{s+N} \in S$ can be defined.
-        To show that this assignment satisfies $F$, note that for each clause $c_i$, there is
-        a literal $l_j$ such that $L_j$ points to $C_i$ and $L_j \in S$.
-        If $j \leq N$, this means we have assigned $x_j = \text{True}$ and $x_j = l^i_u$ for $1 \leq i \leq 3$,
-        satisfying the clause.
-        Otherwise, we have assigned $x_{j-N} = \text{False}$ and $\overline{x_{j-N}} = l^i_u$ for $1 \leq i \leq 3$,
-        satisfying the clause as well.
+                \item[$\Rightarrow\text{)}$] Suppose there is a dominating set $S$ of size at most $k$.
+                for each variable $x_s$, $L_s$ must either be in $S$ or pointed to by an element of $S$
+                (that is, one of $L_s, L_{s+N}$ is in $S$). In fact, because there are $N=k$ variables,
+                \emph{exactly} one of them is in $S$ (otherwise $S$ would have more than $k$ elements).
+                Furthermore, $S$ only contains vertices of the form $L_j$ (and not $C_i$).
 
-    \end{itemize}
+                This means that a variable assignment $x_s = B_s$ where $B_s = \text{True}$
+                if $L_s \in S$ and $B_s = \text{False}$ if $L_{s+N} \in S$ can be defined.
+                To show that this assignment satisfies $F$, note that for each clause $c_i$, there is
+                a literal $l_j$ such that $L_j$ points to $C_i$ and $L_j \in S$.
+                If $j \leq N$, this means we have assigned $x_j = \text{True}$ and $x_j = l^i_u$ for $1 \leq i \leq 3$,
+                satisfying the clause.
+                Otherwise, we have assigned $x_{j-N} = \text{False}$ and $\overline{x_{j-N}} = l^i_u$ for $1 \leq i \leq 3$,
+                satisfying the clause as well.
 
-    \begin{rk}
-        This construction works just as well for arbitrary \verb|SAT| instances, not just \verb|3SAT|.
-    \end{rk}
-    
-    \textbf{Exercise 2:}
+            \end{itemize}
 
-    ~\nocite{*}
+            \begin{rk}
+                This construction works just as well for arbitrary \verb|SAT| instances, not just \verb|3SAT|.
+            \end{rk}
+
+        \newpage
+
+        \item \textcolor{white} a
+
+             \begin{enumerate}[label=\alph*)]
+
+            \item \label{itm:2a}
+            Show that every tournament with $n$ nodes has a dominating set of size at most $\lceil \log n \rceil$.
+
+            \sol I will prove this by induction on $n$, assuming that $\log$ is the base $2$ logarithm.
+            Let $T = (V, A)$ be a tournament with $n$ nodes.
+            Note that the statement is not true for $n \in \{0, 1\}$.
+            If $n=2$, the graph consists of two nodes $a, b$ and an edge $(a, b)$: a dominating set is $S = \{a\}$
+            of size $1 = \lceil \log 2 \rceil$.
+
+            Suppose now that $n > 2$ and that the result holds for all tournaments with less than $n$ nodes.
+            we define the out-degree of a node $v$ as $d_{D}(v) = |\{u | (u,  v) \in A\}|$.
+            because each edge has exactly one source, we have
+            \[\
+                \sum_{v \in V} d_{D}(v) = |A| = \frac{n(n-1)}{2}
+            \]
+            By the pigeonhole principle, there must be a node $v$ with $d \coloneqq d_{D}(v) \geq \frac{n-1}{2}$.
+            Let $T'$ be the tournament obtained by removing from $T$ $v$ and all vertices it points to.
+            It has
+            \[n' \coloneqq n - d - 1 \leq n - \frac{n-1}{2} - 1 = \frac{n-1}{2}\]
+            vertices.
+            By the induction hypothesis,
+            $T'$ has a dominating set $S'$ of size at most $\left \lceil \log n' \right \rceil$.
+            Let
+            \[
+                S = S' \cup \{v\}
+            \]
+            Clearly, by construction, $S$ is a dominating set of $T$.
+            Furthermore,
+            \[
+                |S| = |S'| + 1 \leq
+                \left \lceil \log n' \right \rceil + 1 \leq
+                \left \lceil \log \left( \frac{n-1}{2} \right)\ \right \rceil + 1 =
+                \left \lceil \log (n-1) - 1 \right \rceil + 1 =
+                \left \lceil \log (n - 1) \right \rceil \leq
+                \left \lceil \log n \right \rceil
+            \]
+
+            The only case where the induction hypotesis cannot be applied is when $T'$ has less
+            than $2$ nodes.
+            In that case a dominating set of size at most $1$
+            can be clearly constructed by taking the only node in $T'$
+            (or the empty set if $T'$ has no nodes).
+            In conclusion $|S| \leq 1 + 1 = 2 \leq \lceil \log n \rceil$.
+
+
+            \item Prove that if \verb|TOURNAMENT DOMINATING SET| is
+            $\np$-Complete, then $\np \subseteq \dtime(n^{O(\log n)})$.
+
+            \sol It is sufficient to show that there is an algorithm that decides \verb|TOURNAMENT DOMINATING SET|
+            in time $n^{O(\log n)}$.
+            I describe it below:
+
+            \begin{algorithm}
+                \caption{algorithm for TOURNAMENT DOMINATING SET}
+                \label{alg:alg}
+                \begin{algorithmic}[1]
+                    \Function{ExistsDominatingSetInTournament}{$T = (V, A), k \geq 0$}
+                        \If {$|V| = 0$}
+                            \State \Return \textbf{true}
+                        \EndIf
+
+                        \If {$k = 0$}
+                            \State \Return \textbf{false}
+                        \EndIf
+
+                        \If {$|V| = 1$}
+                            \State \Return \textbf{true}
+                        \EndIf
+
+                        \If {$k \geq \lceil \log |V| \rceil$}
+                            \State \Return \textbf{true}
+                        \EndIf
+
+                        \ForAll{$S \in \binom{V}{k}$}
+                            \If {$S$ is a dominating set}
+                                \State \Return \textbf{true}
+                            \EndIf
+
+                        \EndFor
+
+                        \State \Return \textbf{false}
+
+                    \EndFunction
+                \end{algorithmic}
+            \end{algorithm}
+
+            The algorithm~\ref{alg:alg} is a brute-force algorithm that tries all possible sets of size $k$.
+            By~\ref{itm:2a}, we know that if $k \geq \lceil \log |V| \rceil$, there is a dominating set of size at most $k$,
+            so the algorithm will return \textbf{true} which is correct.
+            Because the loop only runs when $k < \lceil \log |V| \rceil$,
+            enumerating all sets can be done in time $O(n^k) = n^{O(\log n)}$~\cite{reingold1977combinatorial}.
+            the rest of the algorithm is clearly polynomial in time.
+            For appropriate polynomials $p, q$, the algorithm
+            runs in time $p(n) + q(n) n^{O(\log n)} = n^{O(\log n)}$.
+
+            \end{enumerate}
+
+    \end{enumerate}
+
     \bibliography{main}
     \bibliographystyle{plain}
+
+
 
 \end{document}
