@@ -88,7 +88,7 @@
             $D$ contains a dominating set of size at most $k$ if and only if $F$ is satisfiable.
             Furthermore, the construction of the graph will clearly be polynomial in time,
             thus providing the Karp reduction we need directly.
-            This construction is my own work, although I can't garantee that
+            This construction is my own work, although I can't guarantee that
             a similar construction hasn't been used before, as my literature review was not exhaustive,
             and it seems like a natural approach.
 
@@ -106,10 +106,10 @@
             Next, I define the edges $A$ of $D$ as:
             \begin{itemize}
                 \item $\left( L^i_u, C_i \right)$ for $1 \leq u \leq 3,\, 1 \leq i \leq M$
-                (each literal points to the clauses it appears in, which we can construct in linear time).
+                (each literal points to the clauses it appears in, which can be constructed in linear time).
 
                 \item $\left( L_s, L_{s+N} \right)$ and $\left( L_{s+N}, L_{s} \right)$ for $1 \leq s \leq N$
-                (each literal points to its negation, which we can construct in linear time).
+                (each literal points to its negation, which can be constructed in linear time).
 
             \end{itemize}
 
@@ -166,8 +166,8 @@
             of size $1 = \lceil \log 2 \rceil$.
 
             Suppose now that $n > 2$ and that the result holds for all tournaments with less than $n$ nodes.
-            we define the out-degree of a node $v$ as $d_{D}(v) = |\{u | (u,  v) \in A\}|$.
-            because each edge has exactly one source, we have
+            The out-degree of a node $v$ is defined as $d_{D}(v) = |\{u | (u,  v) \in A\}|$.
+            because each edge has exactly one source,
             \[\
                 \sum_{v \in V} d_{D}(v) = |A| = \frac{n(n-1)}{2}
             \]
@@ -193,7 +193,7 @@
                 \left \lceil \log n \right \rceil
             \]
 
-            The only case where the induction hypotesis cannot be applied is when $T'$ has less
+            The only case where the induction hypothesis cannot be applied is when $T'$ has less
             than $2$ nodes.
             In that case a dominating set of size at most $1$
             can be clearly constructed by taking the only node in $T'$
