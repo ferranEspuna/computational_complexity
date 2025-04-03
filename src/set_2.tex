@@ -43,6 +43,9 @@
 \newcommand{\D}{\mathcal{D}}
 
 \newcommand{\np}{\textbf{NP}}
+\newcommand{\p}{\textbf{P}}
+\newcommand{\conp}{\textbf{co\,-NP}}
+\newcommand{\ph}{\textbf{PH}}
 \newcommand{\dtime}{\textbf{DTIME}}
 \newcommand{\sol}{\textbf{Solution:\,}}
 
@@ -70,11 +73,39 @@
     \begin{enumerate}[label=\textbf{Exercise \arabic*:}, leftmargin=0cm, labelwidth=-0.2cm, align=left]
 
         \item
-            Argue that if $\Delta_k^P = \Sigma_k^P$, then $\Delta_k^P=$PH\@.
+            Argue that if $\Delta_k^\p = \Sigma_k^\p$, then $\Delta_k^\p=$\ph\@.
 
-            \sol I will prove that if $\Delta_k^P = \Sigma_k^P$, then $\Delta_k^P=\Pi_k^P$.
-            This implies that $\Sigma_k^P = \Pi_k^P$, and we have seen in class that
-            this implies $\Sigma_k^P = \Pi_k^P = PH$.
+            \sol My plan is to prove that if $\Delta_k^\p = \Sigma_k^\p$, then $\Delta_k^\p=\Pi_k^\p$.
+            This implies that $\Sigma_k^\p = \Pi_k^\p$, and we have seen in class that
+            this implies $\Sigma_k^\p = \Pi_k^\p = \ph$.
+
+            For this, recall the recursive definition of these classes:
+            \begin{align*}
+                \Delta_k^\p &= \p^{\Sigma_i^\p}. \\
+                \Sigma_k^\p &= \np^{\Sigma_i^\p}. \\
+                \Pi_k^\p &= \conp^{\Sigma_i^\p}.
+            \end{align*}
+
+            The inclusions $\Delta_k^\p \subseteq \Sigma_k^\p$ and $\Delta_k^\p \subseteq \Pi_k^\p$ clear
+            from the definitions and have been discussed in class.
+            Therefore, it is enough to prove
+
+            \begin{equation}
+                \Sigma_k^\p \subseteq \Delta_k^\p \implies \Pi_k^\p \subseteq \Delta_k^\p.\label{eq:want}
+            \end{equation}
+
+            Suppose that $\Sigma_k^\p \subseteq \Delta_k^\p$ and let $X \in \Pi_k^\p$ be a language.
+            Then, $\ov{X} \in \Sigma_k^\p \subseteq \Delta_k^\p$.
+            However, $\Delta_k^\p$ is closed under compliment, because its languages can be decided
+            deterministically in polynomial time with $\Sigma_i^\p$ oracles
+            (in particular, the output bit can just be flipped).
+            More formally, let $M$ be a DTM that decides $\ov{X}$ with access to a $\Sigma_i^\p$ oracle.
+            Then, a DTM $M'$ that decides $X$ with access to the same oracle can be constructed:
+            Run $M$ on the input and output the opposite of the answer given by $M$.
+            This implies that $X \in \Delta_k^\p$, proving~\eqref{eq:want}.
+
+
+
 
     \end{enumerate}
 
