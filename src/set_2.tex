@@ -122,7 +122,7 @@
             However, this machine would not necessarily run in log-space, because it would need to write the output of $f$ on one of its
             work tapes in order for $M$ to read it.
             Instead, use a trick introduced in class: I construct the $k$th bit of $f(x)$ whenever it is needed by $M$.
-            To achieve this, in addition to the input tape, the output and work tapes of  $M$, and the work tapes of $D$, I need:
+            To achieve this, in addition to the input and work tapes of $D$, and the output and work tapes of $M$, I need:
             \begin{itemize}
                 \item A work tape $K$ of which only one bit is used, which corresponds to the $k$th bit of $f(x)$.
                 This serves as the output tape of $D$ and the input tape of $M$.
