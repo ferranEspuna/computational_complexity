@@ -119,8 +119,8 @@
             On the other hand, $B \in \nl$ means that there is a log-space non-deterministic Turing machine $M$
             such that $M$ accepts $x$ if and only if $x \in B$.
             Naïvely, a nondeterministic turing machine $N$ can be constructed that computes $f(x)$ by running $D$ and runs $M$ on the output.
-            However, this machine would not necessarily run in log-space, because it would need to write the output of $f$ on its
-            work tape in order for $M$ to read it.
+            However, this machine would not necessarily run in log-space, because it would need to write the output of $f$ on one of its
+            work tapes in order for $M$ to read it.
             Instead, use a trick introduced in class: I construct the $k$th bit of $f(x)$ whenever it is needed by $M$.
             To achieve this, in addition to the input tape, the output and work tapes of  $M$, and the work tapes of $D$, I need:
             \begin{itemize}
