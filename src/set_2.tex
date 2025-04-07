@@ -146,7 +146,7 @@
                 \For{step $S$ of a run of $M$}
                     \If{$S$ reads from the input}
                         \State $DC \gets 0$
-                        \For{step $T$ of a run of $D$ on the input $x$ from its initial state}
+                        \For{step $T$ of a run of $D$ on the input $x$ from its initial configuration}
                             \If{$T$ writes bit $b$ to the output tape and $DC = MC$}
                                 \State Write $b$ in $K$
                             \EndIf
