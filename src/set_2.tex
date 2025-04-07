@@ -44,6 +44,7 @@
 
 \newcommand{\np}{\textbf{NP}}
 \newcommand{\p}{\textbf{P}}
+\newcommand{\nl}{\textbf{NL}}
 \newcommand{\conp}{\textbf{co\,-NP}}
 \newcommand{\ph}{\textbf{PH}}
 \newcommand{\dtime}{\textbf{DTIME}}
@@ -81,9 +82,9 @@
 
             For this, recall the recursive definition of these classes:
             \begin{align*}
-                \Delta_k^\p &= \p^{\Sigma_i^\p}. \\
-                \Sigma_k^\p &= \np^{\Sigma_i^\p}. \\
-                \Pi_k^\p &= \conp^{\Sigma_i^\p}.
+                \Delta_k^\p &= \p^{\Sigma_{k-1}^\p}. \\
+                \Sigma_k^\p &= \np^{\Sigma_{k-1}^\p}. \\
+                \Pi_k^\p &= \conp^{\Sigma_{k-1}^\p}.
             \end{align*}
 
             The inclusions $\Delta_k^\p \subseteq \Sigma_k^\p$ and $\Delta_k^\p \subseteq \Pi_k^\p$ clear
@@ -97,19 +98,91 @@
             Suppose that $\Sigma_k^\p \subseteq \Delta_k^\p$ and let $X \in \Pi_k^\p$ be a language.
             Then, $\ov{X} \in \Sigma_k^\p \subseteq \Delta_k^\p$.
             However, $\Delta_k^\p$ is closed under compliment, because its languages can be decided
-            deterministically in polynomial time with a $\Sigma_i^\p$ oracle
+            deterministically in polynomial time with a $\Sigma_{k-1}^\p$ oracle
             (in particular, the output bit can just be flipped).
-            More formally, let $M$ be a DTM that decides $\ov{X}$ with access to a $\Sigma_i^\p$ oracle.
+            More formally, let $M$ be a DTM that decides $\ov{X}$ with access to a $\Sigma_{k-1}^\p$ oracle.
             Then, a DTM $M'$ that decides $X$ with access to the same oracle can be constructed:
             Run $M$ on the input and output the opposite of the answer given by $M$.
             This implies that $X \in \Delta_k^\p$, proving~\eqref{eq:want}.
 
+        \item
+            Let $A, b \subseteq \{0, 1\}*$ be two languages.
+            Show that if $A \leq_m^l B$ and $B \in \nl$, then $A \in \nl$.
 
+            \sol Recall that $A \leq_m^l B$ means that there is a log-space computable function $f$
+            (say, by a deterministic Turing machine $D$) such that
+            \begin{equation}
+                x \in A \iff f(x) \in B.
+                \label{eq:logspace}
+            \end{equation}
 
+            On the other hand, $B \in \nl$ means that there is a log-space non-deterministic Turing machine $M$
+            such that $M$ accepts $x$ if and only if $x \in B$.
+            Naïvely, a nondeterministic turing machine $N$ can be constructed that computes $f(x)$ by running $D$ and runs $M$ on the output.
+            However, this machine would not necessarily run in log-space, because it would need to write the output of $f$ on its
+            work tape in order for $M$ to read it.
+            Instead, use a trick introduced in class: I construct the $k$th bit of $f(x)$ whenever it is needed by $M$.
+            To achieve this, in addition to the input tape, the output and work tapes of  $M$, and the work tapes of $D$, I need:
+            \begin{itemize}
+                \item A work tape $K$ of which only one bit is used, which corresponds to the $k$th bit of $f(x)$.
+                This serves as the output tape of $D$ and the input tape of $M$.
+                The head associated with this tape never moves.
+
+                \item A work tape $MC$ to store the position of the read head of $M$, and increment it or decrement it
+                whenever the program of $M$ moves the read head.
+
+                \item A work tape $DC$ to store the position of the write head of $D$, and increment it or decrement it
+                whenever the program of $D$ moves the write head.
+            \end{itemize}
+
+            More precisely, the machine works as follows:
+
+            \begin{algorithm}[H]
+            \caption{Nondeterministic Turing Machine $N$ that decides $A$}
+            \label{alg:kpartite}
+            \begin{algorithmic}[1]
+                \Require $x$
+                \State $MC \gets 0$
+                \For{step $S$ of a run of $M$}
+                    \If{$S$ reads from the input}
+                        \State $DC \gets 0$
+                        \For{step $T$ of a run of $D$ on the input $x$ from its initial state}
+                            \If{$T$ writes bit $b$ to the output tape and $DC = MC$}
+                                \State Write $b$ in $K$
+                            \EndIf
+                            \State Perform step $T$, without moving $N$'s write head or writing to its output tape
+                            \If{$T$ moves the write head to the left}
+                                \State $DC \gets DC - 1$
+                            \ElsIf{$T$ moves the write head to the right}
+                                \State $DC \gets DC + 1$
+                            \EndIf
+                        \EndFor
+                    \EndIf
+                    \State Perform step $S$, reading from $K$ instead of the input tape, and never moving $N$'s read head
+
+                    \If{$S$ moves the read head to the left}
+                        \State $MC \gets MC - 1$
+
+                    \ElsIf{$S$ moves the read head to the right}
+                        \State $MC \gets MC + 1$
+
+                    \EndIf
+                \EndFor
+                
+                    \end{algorithmic}
+        \end{algorithm}
 
     \end{enumerate}
 
-
-
+    Note that the machine $N$ is a (non-deterministic, because the steps of the machine
+    $M$ used are non-deterministic) Turing machine that completely emulates the machine $M$
+    on the input $f(x)$.
+    Therefore, it accepts $x$ if and only if $M$ accepts $f(x)$, that is, if and only if $x \in A$.
+    Furthermore, it only uses as much space as $M$ and $D$ together, plus
+    the space used in the tapes $MC$, $DC$ and $K$.
+    However, $K$ is only one bit, and $MC$ and $DC$ can count only up to $|f(x)|$, which is polynomial in $|x|$,
+    because $D$ is a log-space machine.
+    Therefore, the number of bits used by $N$ is logarithmic in $|x|$.
+    This concludes the proof that $A \in \nl$.
 
 \end{document}
