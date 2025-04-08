@@ -191,19 +191,17 @@
         The interplay between the non-determinism of $M$ and that of $N$ is kind of ``hidden'' by the formalism
          of choice between two transition functions (which is performed every time a step $S$ is selected
         in line~\ref{line:S}). To do the same using the certificates formalism, I would model both $N$ and $M$ as
-        deterministic verifiers. $N$ would be a  $DTM$ taking
+        deterministic verifiers. $N$ would be a  DTM taking
         $\left< x, u \right>$ as input, where $u$ is a certificate of size polynomial in $|f(x)|$
         (which is polynomial in $|x|$).
         Then, I would change $D$ to $D'$, where $D'$
-        is a log-space $DTM$ that computes $f'(\left< x, u \right>) = \left< f(x), u \right>$
+        is a log-space DTM that computes $f'(\left< x, u \right>) = \left< f(x), u \right>$
         (this is possible because $D$ is a log-space machine and copying $u$ from the input to the output
         tape has no effect on the space used).
         Then, $N$ accepts $\left< x, u \right>$ if and only if $M$ accepts $\left< f(x), u \right>$.
-        Therefore, the $NDTM$ associated with $N$ accepts $x$ if and only if
-        the $NDTM$ associated with $M$ accepts $f(x)$.
+        Therefore, the NDTM associated with $N$ accepts $x$ if and only if
+        the NDTM associated with $M$ accepts $f(x)$.
         That is, if and only if $x \in A$.
-
-
 
     \end{enumerate}
 
