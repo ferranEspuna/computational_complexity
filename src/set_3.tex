@@ -1,0 +1,150 @@
+\documentclass{amsart}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newtheorem*{theirtheorem}{Theorem}
+\newtheorem*{theirproposition}{Proposition}
+
+
+\theoremstyle{plain}
+\newtheorem*{theorem}{\textbf{Theorem}}
+\newtheorem*{lemma}{\textbf{Lemma}}
+\newtheorem*{corollary}{\textbf{Corollary}}
+\newtheorem*{proposition}{\textbf{Proposition}}
+\newtheorem*{claim}{\textbf{Claim}}
+\newtheorem*{conjecture}{\textbf{Conjecture}}
+
+\theoremstyle{definition}
+\newtheorem*{rk}{\textbf{Remark}}
+
+\newcommand{\Summ}[1]{\underset{#1}{\sum}}
+\newcommand{\sti}[2]{\left\{\begin{array}{c} #1 \\ #2 \end{array}\right\}}
+
+\newcommand{\diam}{\emph{diam}}
+\newcommand{\conv}{\mbox{Conv}}
+\newcommand{\C}{\mathcal {C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\D}{\mathcal{D}}
+
+\newcommand{\bpp}{\textbf{BPP}}
+\newcommand{\np}{\textbf{NP}}
+\newcommand{\p}{\textbf{P}}
+\newcommand{\nl}{\textbf{NL}}
+\newcommand{\conp}{\textbf{co\,-NP}}
+\newcommand{\ph}{\textbf{PH}}
+\newcommand{\dtime}{\textbf{DTIME}}
+\newcommand{\sol}{\textbf{Solution:\,}}
+
+\newcommand{\ov}[1]{\overline{#1}}
+
+\newcommand{\nn}{\nonumber}
+
+\thispagestyle{empty}
+
+\usepackage{enumitem}
+
+\usepackage{parskip}
+
+
+\begin{document}
+
+    {\Large MIRI, MAMME, MPAL -- Computational Complexity -- Homework 2}
+
+    \vspace{0.5cm}
+
+    \hrule
+
+    \vspace{0.5cm}
+
+    \begin{enumerate}[label=\textbf{Exercise \arabic*:}, leftmargin=0cm, labelwidth=-0.2cm, align=left]
+
+        \item
+            Prove that $\bpp^{\bpp} = \bpp$.
+
+            \sol The inclusion $\bpp \subseteq \bpp^{\bpp}$ is clear.
+            Let $L \in \bpp^{\bpp}$ and let $M$ be a probabilistic Turing machine
+            that decides if $x \in L$
+            in time $p(|x|)$, with error probability at most $\alpha$
+            (both if $x \in L$ and if not);
+            with access to an oracle for
+            $A \in \bpp$.
+            Furthermore, let $N$ be a probabilistic Turing machine that decides if $y \in A$
+            in time $q(|y|)$,
+            with error probability at most $\beta$
+            (both if $y \in A$ and if not).
+
+            Let $M'$ be the probabilistic Turing machine that simulates $M$,
+            but instead of querying the oracle, it simulates $N$ on the input
+            to the oracle.
+            On an input $x$,
+            The number of simulated queries is at most $p(|x|)$
+            (one for each step of $M$).
+            Because $M$ must write each query to the oracle,
+            the inputs to $N$ are of length at most $p(|x|)$.
+            Therefore, the total time of $M'$ is bounded by
+            \[
+               q(p(|x|)) \cdot p(|x|),
+            \]
+            which is polynomial in $|x|$.
+            The probability of $M'$ giving the correct answer is
+            \begin{align*}
+                \gamma \geq & \mathbb{P}(\text{all simulated queries give the correct answer and } M' \text{ gives the correct answer}) \\
+                = & \mathbb{P}(\text{all simulated queries are correct}) \cdot \mathbb{P}(M' \text{ gives the correct answer } | \text{ all simulated queries are correct}) \\
+                \geq & \mathbb{P}(\text{all simulated queries are correct}) \cdot (1 - \alpha) \\
+                \geq & (1 - \beta)^{p(|x|)} \cdot (1 - \alpha).
+            \end{align*}
+            The two last inequalities come from the fact that the randomness in the computational path
+            of the simulated $M$ and the simulated oracle calls are all independent, and that
+            $M'$ perfectly simmulates $M$ whenever all the simulated oracle calls give the correct answer.
+
+            We have seen in class that the error rates of probabilistic Turing machines
+            can be made arbitrarily small
+            while keeping the runtime of the machines polynomial.
+            In fact, we saw that they can be made less than
+            \[
+                \frac{1}{2^{t(|x|)}}
+            \]
+            for any polynomial $t$ and input $x$.
+            For us to prove that $L \in \bpp$, it suffices to show that $\gamma \geq \frac{3}{4}$.
+            For example, selecting
+            \[
+                \alpha \leq \frac{1}{2^3} = \frac{1}{8}
+            \]
+            and 
+            \[
+                \beta \leq \frac{1}{2^{10 p(|x|)}} \leq \frac{1}{10 p(|x|)},
+            \]
+            we obtain
+            \[
+                \gamma
+                \geq \left(1 - \frac{1}{10 p(|x|)}\right)^{p(|x|)} \left( 1 - \frac{1}{8} \right)
+                \geq \frac{9}{10} \cdot \frac{7}{8}
+                > \frac{3}{4},
+            \]
+            where the middle inequality comes from the fact that the function
+            \[
+                f(n) = \left(1 - \frac{1}{10 n}\right)^{n}
+            \]
+            is increasing and $f(1) = \frac{9}{10}$.
+        
+
+
+    \end{enumerate}
+
+\end{document}
