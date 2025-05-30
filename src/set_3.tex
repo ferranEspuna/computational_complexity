@@ -113,7 +113,7 @@
             \end{align*}
             The two last inequalities come from the fact that the randomness in the computational path
             of the simulated $M$ and the simulated oracle calls are all independent, and that
-            $M'$ perfectly simmulates $M$ whenever all the simulated oracle calls give the correct answer.
+            $M'$ perfectly simulates $M$ whenever all the simulated oracle calls give the correct answer.
 
             We have seen in class that the error rates of probabilistic Turing machines
             can be made arbitrarily small
@@ -158,7 +158,7 @@
         \]
         Intuitively, the language $L$ becomes a problem in $C$ by
         giving it some advice $f_L(|x|)$, which depends only on the length of the input $x$ and whose length $|f_L(|x|)|$ is bounded by a function in $A$.
-        This is reminiscent of the definition of $\size{C}$, in which the logic gates can depend on the input size.
+        This is reminiscent of the definition of $\size{\mathcal{C}}$, in which the logic gates can depend on the input size.
         The definition, while perhaps intricate, precisely defines $L$ based on $L' \in C$ and the pre-determined advice $f_L(|x|)$.
         For any input $x$, its membership in $L$ is determined by whether
         $(x, f_L(|x|))$ is in $L'$; the advice $f_L(|x|)$ is an integral part of this decision process for each input length.
