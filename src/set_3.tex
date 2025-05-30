@@ -42,6 +42,9 @@
 \newcommand{\G}{\mathcal{G}}
 \newcommand{\D}{\mathcal{D}}
 
+\newcommand{\size}[1]{\textbf{SIZE}(#1)}
+\newcommand{\poly}{\text{poly}}
+\newcommand{\advice}[2]{#1 | #2}
 \newcommand{\bpp}{\textbf{BPP}}
 \newcommand{\np}{\textbf{NP}}
 \newcommand{\p}{\textbf{P}}
@@ -74,8 +77,7 @@
 
     \begin{enumerate}[label=\textbf{Exercise \arabic*:}, leftmargin=0cm, labelwidth=-0.2cm, align=left]
 
-        \item
-            Prove that $\bpp^{\bpp} = \bpp$.
+        \item Prove that $\bpp^{\bpp} = \bpp$.
 
             \sol The inclusion $\bpp \subseteq \bpp^{\bpp}$ is clear.
             Let $L \in \bpp^{\bpp}$ and let $M$ be a probabilistic Turing machine
@@ -122,11 +124,11 @@
             \]
             for any polynomial $t$ and input $x$.
             For us to prove that $L \in \bpp$, it suffices to show that $\gamma \geq \frac{3}{4}$.
-            For example, selecting
+            For example, setting
             \[
                 \alpha \leq \frac{1}{2^3} = \frac{1}{8}
             \]
-            and 
+            and
             \[
                 \beta \leq \frac{1}{2^{10 p(|x|)}} \leq \frac{1}{10 p(|x|)},
             \]
@@ -142,9 +144,150 @@
                 f(n) = \left(1 - \frac{1}{10 n}\right)^{n}
             \]
             is increasing and $f(1) = \frac{9}{10}$.
-        
 
+        \newpage \item Describe the original definition of the advice class $\advice{\p}{\poly}$
+        and give a high level explanation of why it is equivalent to the class $\size{\poly}$.
 
+        \sol The advice classes $\advice{C}{A}$ are defined~\cite{karp1982turing} as the set of languages $L$
+        for which there exists a language $L' \in C$ and a
+        function $f_L: \N \to \{0, 1\}^*$ such that the function
+        $n \mapsto |f_L(n)|$ is in $A$ (i.e., for $A=\poly$, $|f_L(n)|$ is polynomially bounded in $n$)
+        satisfying
+        \[
+            L = \{x \in \{0, 1\}^* \mid (x, f_L(|x|)) \in L'\}.
+        \]
+        Intuitively, the language $L$ becomes a problem in $C$ by
+        giving it some advice $f_L(|x|)$, which depends only on the length of the input $x$ and whose length $|f_L(|x|)|$ is bounded by a function in $A$.
+        This is reminiscent of the definition of $\size{C}$, in which the logic gates can depend on the input size.
+        The definition, while perhaps intricate, precisely defines $L$ based on $L' \in C$ and the pre-determined advice $f_L(|x|)$.
+        For any input $x$, its membership in $L$ is determined by whether
+        $(x, f_L(|x|))$ is in $L'$; the advice $f_L(|x|)$ is an integral part of this decision process for each input length.
+
+        In our case, we have $C = \p$ and $A = \poly$, which means that the language $L$
+        can be decided by a polynomial-time Turing machine given some advice $f_L$
+        of length bounded by a polynomial in the length of the input.
+        In this case, the classes $\advice{\p}{\poly}$ and $\size{\poly}$ coincide.
+        Let us sketch the proof of this by double inclusion.
+
+        The inclusion $\advice{\p}{\poly} \subseteq \size{\poly}$ is similar to the one we saw in class,
+        where we showed that
+        \[
+            \p \subseteq \size{\poly}
+        \]
+        by a reduction from a turing machine with a single tape, with extra states to simulate the read/write head,
+        where the transformation was local in the sense that the sub-circuits representing each position of the tape
+        were only connected to the sub-circuits representing the next and previous positions.
+        In that case, the circuit just became bigger for each input length, as the number of positions we needed to simulate
+        grew polynomially with the input length.
+        Let $n \in \N$ be a fixed input length.
+        To simulate the advice string $f_L(n)$, we ``hard-code''
+        the input positions of the advice string into the circuit $S'$ corresponding to $L'$ for input size $n + |f_L(n)|$.
+        These positions will behave just like the input positions of the tape but will no longer be connected to the actual input.
+        We can do this because the advice function only depends on the length of the input, and not on the input itself.
+        One way to hard-code the advice string into the circuit is to, for example, let $p$ be the first position of the actual input,
+        and codify each position corresponding to the $i$th bit of $f_L(n)$ (that is, the ${(n+i)}$th
+        position of the simulated input where $1 \leq i \leq |f_L(n)|$) as
+        \begin{alignat*}{2}
+            p &\text{ OR }  &&(\neg p), \text{ if } f_L(n)_i = 1 \\
+            p &\text{ AND } &&(\neg p), \text{ if } f_L(n)_i = 0
+        \end{alignat*}
+        The number of gates in $S'$ (the circuit for $L'$) is a polynomial in $n + |f_L(n)|$
+        (the total length of the actual input $x$ and the advice string $f_L(n)$),
+        which in turn is bounded by a polynomial in $n$ because $|f_L(n)|$ (the length of the advice)
+        is polynomially bounded in $n$.
+        The number of extra gates needed to do the hard-coding of $f_L(n)$ is linear in $|f_L(n)|$, as we codify each bit independently.
+        Therefore, we obtain a circuit $S$ whose size is bounded by a polynomial in $n$ and
+        outputs $1$ for an input $x$ of length $n$ if and only if
+        \[
+            (x, f_L(n)) \in L' \iff x \in L.
+        \]
+
+        Now we show the other inclusion, $\size{\poly} \subseteq \advice{\p}{\poly}$.
+        Let $L \in \size{\poly}$.
+        This means that for each input length $n$, there exists a circuit $S_n$
+        that decides $L$ for all inputs of length $n$, and the number of gates of $S_n$
+        (denoted $|S_n|$) is bounded by a polynomial in $n$.
+        We want to find a polynomial-time Turing machine $M$ and
+        an advice string family $f_L(n)$ whose length is polynomially bounded in $n$,
+        such that  for all inputs $x$ of length $n$,
+        $M(x, f_L(n))$ accepts if and only if $x \in L$, that is, if $S_n$ accepts $x$.
+        The idea is to encode a description of the circuit $S_n$ into the advice string
+        $f_L(n)$ (which can be done because $|S_n|$ is polynomially bounded in $n$),
+        and then let $M$ simulate $S_n$ on the input $x$.
+        We need to find a succinct description $\langle S_n \rangle$ of $S_n$
+        and describe a polynomial-time Turing machine $M$ that simulates $S_n$ given the input $x$ and $f_L(n) = \langle S_n \rangle$.
+
+        We assume gates are topologically sorted $g_1, g_2, \dots, g_{|S_n|}$, meaning if gate $g_k$ inputs to $g_j$, then $k < j$.
+        The first $n$ gates, $g_1, \dots, g_n$, correspond to the input bits $x_1, \dots, x_n$.
+        Gates $g_{n+1}, \dots, g_{|S_n|}$ are internal logic gates.
+        One gate (e.g., $g_{|S_n|}$) is the output gate.
+
+        The advice string $f_L(n) = \langle S_n \rangle$ can specify:
+        \begin{enumerate}
+            \item \textbf{Total number of gates:} The value $|S_n|$, encoded in binary ($\mathcal{O}(\log |S_n|)$ bits).
+            \item \textbf{Gate Information:} For each logic gate $g_j$ ($j \in \{n+1, \dots, |S_n|\}$):
+            \begin{itemize}
+                \item Its type (e.g., integer code for INPUT, AND, OR, NOT; $\mathcal{O}(1)$ bits).
+                \item Indices of its input gate(s) (e.g., $(k_1, k_2)$ for binary gates, $k_1$ and a dummy value for unary, where $k_1, k_2 < j$).
+                Each index takes $\mathcal{O}(\log |S_n|)$ bits.
+            \end{itemize}
+        \end{enumerate}
+        The total length of $\langle S_n \rangle$ is $\mathcal{O}(|S_n| \log |S_n|)$.
+        Since $|S_n| \in \poly(n)$, $\log |S_n| = \mathcal{O}(\log n)$,
+        so the length of $\langle S_n \rangle$ is $\mathcal{O}(\poly(n) \log n)$, which is polynomially bounded in $n$.
+
+        The language $L'$ is defined as
+        \[
+            \textbf{SIM}
+            = \{ (x, \langle S \rangle) \mid S \text{ has } |x| \text{ inputs and accepts } x\}.
+        \]
+        Therefore,
+        \[
+            L = \{ x \in \{0, 1\}^* \mid S_{|x|} \text{ accepts } x \}
+            = \{ x \in \{0, 1\}^* \mid (x, f_L(|x|)) \in \textbf{SIM} \}.
+        \]
+        If we show that $\textbf{SIM} \in \p$, we will have shown that $L \in \advice{\p}{\poly}$.
+        We now provide pseudocode for the Turing machine $M_{\textbf{SIM}}$ that simulates $S$ on $x$ given $(x, \langle S \rangle)$.
+
+        \begin{algorithm}[H] % H makes the algorithm float "here" if possible
+        \caption{Circuit Simulation by $M_{\textbf{SIM}}$}
+        \label{alg:circuitsim_m}
+        \begin{algorithmic}[1]
+        \Procedure{SimulateCircuit}{$x$, $\langle S_n \rangle$}
+            \State $N_{gates}, GATES$ \gets $\langle S_n \rangle$ \Comment{Parse the circuit description into a list of gates}
+            \State $n \leftarrow |x|$.
+
+            \State Declare $GateValues[1 \dots N_{gates}]$ \Comment{Initialize an array to store the values of all gates}
+
+            \For{$i \leftarrow 1$ to $n$}
+                \State $GateValues[i] \leftarrow x_i$ \Comment{$x_i$ is the $i$-th bit of $x$}
+            \EndFor
+
+            \For{$j \leftarrow n+1$ to $N_{gates}$}
+                \State $(t, k_1, k_2)$ \gets $GATES[j]$. \Comment{Get the type and input indices of gate $j$}
+                \If{$t$ is NOT}
+                    \State $GateValues[j]$ \gets $\neg GateValues[k_1]$
+                \ElsIf{$t$ is AND}
+                    \State $GateValues[j]$ \gets $GateValues[k_1] \land GateValues[k_2]$
+                \ElsIf{$t$ is OR}
+                    \State $GateValues[j]$ \gets $GateValues[k_1] \lor GateValues[k_2]$
+                \EndIf
+            \EndFor
+
+            \State \Return $GateValues[N_{gates}]$
+        \EndProcedure
+        \end{algorithmic}
+        \end{algorithm}
+
+        The algorithm clearly runs in polynomial time,
+        so we have shown that $\textbf{SIM} \in \p$, concluding our proof that
+        \[
+            \size{\poly} \subseteq \advice{\p}{\poly}.
+        \]
     \end{enumerate}
+
+    \newpage
+    \bibliography{main}
+    \bibliographystyle{plain}
 
 \end{document}
