@@ -254,8 +254,8 @@
         \label{alg:circuitsim_m}
         \begin{algorithmic}[1]
         \Procedure{SimulateCircuit}{$x$, $\langle S_n \rangle$}
-            \State $N_{gates}, GATES$ \gets $\langle S_n \rangle$ \Comment{Parse the circuit description into a list of gates}
-            \State $n \leftarrow |x|$.
+            \State $N_{gates}, GATES \gets \langle S_n \rangle$ \Comment{Parse the circuit description into a list of gates}
+            \State $n \leftarrow |x|$
 
             \State Declare $GateValues[1 \dots N_{gates}]$ \Comment{Initialize an array to store the values of all gates}
 
@@ -264,13 +264,13 @@
             \EndFor
 
             \For{$j \leftarrow n+1$ to $N_{gates}$}
-                \State $(t, k_1, k_2)$ \gets $GATES[j]$. \Comment{Get the type and input indices of gate $j$}
+                \State $(t, k_1, k_2) \gets GATES[j]$ \Comment{Get the type and input indices of gate $j$}
                 \If{$t$ is NOT}
-                    \State $GateValues[j]$ \gets $\neg GateValues[k_1]$
+                    \State $GateValues[j] \gets \neg GateValues[k_1]$
                 \ElsIf{$t$ is AND}
-                    \State $GateValues[j]$ \gets $GateValues[k_1] \land GateValues[k_2]$
+                    \State $GateValues[j] \gets GateValues[k_1] \land GateValues[k_2]$
                 \ElsIf{$t$ is OR}
-                    \State $GateValues[j]$ \gets $GateValues[k_1] \lor GateValues[k_2]$
+                    \State $GateValues[j] \gets GateValues[k_1] \lor GateValues[k_2]$
                 \EndIf
             \EndFor
 
