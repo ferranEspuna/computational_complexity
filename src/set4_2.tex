@@ -1,0 +1,147 @@
+\documentclass{amsart}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newtheorem*{theirtheorem}{Theorem}
+\newtheorem*{theirproposition}{Proposition}
+
+
+\theoremstyle{plain}
+\newtheorem*{theorem}{\textbf{Theorem}}
+\newtheorem*{lemma}{\textbf{Lemma}}
+\newtheorem*{corollary}{\textbf{Corollary}}
+\newtheorem*{proposition}{\textbf{Proposition}}
+\newtheorem*{claim}{\textbf{Claim}}
+\newtheorem*{conjecture}{\textbf{Conjecture}}
+
+\theoremstyle{definition}
+\newtheorem*{rk}{\textbf{Remark}}
+
+\newcommand{\Summ}[1]{\underset{#1}{\sum}}
+\newcommand{\sti}[2]{\left\{\begin{array}{c} #1 \\ #2 \end{array}\right\}}
+
+\newcommand{\diam}{\emph{diam}}
+\newcommand{\conv}{\mbox{Conv}}
+\newcommand{\C}{\mathcal {C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\D}{\mathcal{D}}
+
+\newcommand{\size}[1]{\textbf{SIZE}(#1)}
+\newcommand{\poly}{\text{poly}}
+\newcommand{\advice}[2]{#1 | #2}
+\newcommand{\bpp}{\textbf{BPP}}
+\newcommand{\np}{\textbf{NP}}
+\newcommand{\p}{\textbf{P}}
+\newcommand{\nl}{\textbf{NL}}
+\newcommand{\conp}{\textbf{co\,-NP}}
+\newcommand{\ph}{\textbf{PH}}
+\newcommand{\fp}{\textbf{FP}}
+\newcommand{\sharpp}{\textbf{\#P}}
+\newcommand{\sharpclique}{\textbf{\#CLIQUE}}
+\newcommand{\sharpsat}{\textbf{\#SAT}}
+\newcommand{\dtime}{\textbf{DTIME}}
+\newcommand{\sol}{\textbf{Solution:\,}}
+
+\newcommand{\ov}[1]{\overline{#1}}
+
+\newcommand{\nn}{\nonumber}
+
+\thispagestyle{empty}
+
+\usepackage{enumitem}
+
+\usepackage{parskip}
+
+
+\begin{document}
+
+    {\Large MIRI, MAMME, MPAL -- Computational Complexity -- Homework 3}
+
+    \vspace{0.5cm}
+
+    \hrule
+
+    \vspace{0.5cm}
+
+    \begin{enumerate}[label=\textbf{Exercise \arabic*:}, leftmargin=0cm, labelwidth=-0.2cm, align=left]
+
+        \item Let \sharpclique\, be the problem of counting how many $k$-cliques exist in a given graph
+        for a given positive integer $k$.
+        Show that $\sharpclique \in \p^{\sharpsat}$.
+
+           \sol I proceed by direct reduction.
+            Let $G = (V, E)$ be an undirected graph with $n$ vertices
+            and $1 \leq k \leq n$ an integer.
+            I now claim that the number $N$ of \emph{ordered}
+            $k$-cliques can be found in polynomial time
+            with access to $\sharpsat$ oracle.
+            This is enough because given the number
+            of ordered $k$-cliques is $N' = k!N$ and
+            $N' \mapsto N'/k! \in \fp$.
+
+            Let $T = (u_1, \dots u_k) \in V^k$ be an ordered set of vertices.
+            The elements of $T$ form a $k$-clique in $G$ if an only if
+            $\{u_i, u_j\} \in E$ for all $1 \leq i < j \leq k$
+            (note that this implies that all the elements are different,
+            since I are assuming that $G$ is a simple graph, with no loops). % todo check
+            To encode this information into a boolean formula I consider
+            the variables $x_i^u$ (for $u \in V$ and $i \in [k])$,
+            representing whether $u_i = u$.
+            The above condition translates to 
+            \[
+                \text{``If } \{w_1, w_2\} \notin E \text{ for } w_1 \neq w_2 \in V,
+                \neg u_i^{w_j} \text{ for all } i \in [k] \text{, for at least one }
+                j \in \{1, 2\} \text{''}.
+            \]
+            This is, each non-edge $e = \{x, y\}$ of $G$ (of which there are at most $\binom{n}{2}$)
+            introduces a condition on the variables of the form
+            \[
+                \left( \bigwedge_{i \in [k]} \neg u_i^x \right) \bigvee \left( \bigwedge_{i \in [k]} \neg u_i^y \right)
+                \equiv \bigwedge_{(i, j) \in [k]^2} (\neg u_i^x \lor \neg u_i^y) \eqqcolon \mathcal{C}_e.
+            \]
+            The full condition is thus equivalent to
+            \[
+                \mathcal{C} \coloneqq \bigwedge_{e \in \binom{V}{2} \setminus E} \mathcal{C}_{e},
+            \]
+            which is in CNF.
+            An assignment $V \times [k] \to \{0, 1\}$ represents a $k$-tuple of vertices if and only if
+            exactly one vertex is selected for each entry of $T$.
+            I do this in two steps.
+            First I introduce a formula that ensures \emph{at most} one vertex is selected for each entry:
+            \[
+                \mathcal{B} \coloneqq \bigwedge_{\{x, y\} \in \binom{V}{2},\, i \in [k]} (\neg u_i^x \lor \neg u_i^y).
+            \]
+            Then, I introduce the following other formula, which ensures \emph{at least} one vertex is selected
+            for each entry.
+            \[
+                \mathcal{A} \coloneqq \bigwedge_{i \in [k]} \left( \bigvee_{x \in V} u_i^x \right).
+            \]
+            Formulas $\mathcal{A}, \mathcal{B}$ and $\mathcal{C}$
+            can clearly be obtained from $G$ in polynomial time.
+            Furthermore, there is a bijection from assignments
+            $V \times [k] \to \{0, 1\}$ satisfying
+            $\mathcal{A} \land \mathcal{B} \land \mathcal{C}$
+            and ordered $k$-cliques in $G$.
+            Therefore, a single query to a $\sharpsat$ oracle is enough to count the number $N'$ of ordered
+            $k$-cliques in $G$ in polynomial time.
+            Then computing $N = N' / k!$ yields the actual number of $k$-cliques.
+
+    \end{enumerate}
+
+\end{document}
