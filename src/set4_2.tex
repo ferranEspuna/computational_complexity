@@ -88,36 +88,29 @@
            \sol I proceed by direct reduction.
             Let $G = (V, E)$ be an undirected graph with $n$ vertices
             and $1 \leq k \leq n$ an integer.
-            I now claim that the number $N$ of \emph{ordered}
+            I now claim that the number $N'$ of \emph{ordered}
             $k$-cliques can be found in polynomial time
-            with access to $\sharpsat$ oracle.
+            with access to a $\sharpsat$ oracle.
             This is enough because given the number
             of ordered $k$-cliques is $N' = k!N$ and
             $N' \mapsto N'/k! \in \fp$.
 
-            Let $T = (u_1, \dots u_k) \in V^k$ be an ordered set of vertices.
-            The elements of $T$ form a $k$-clique in $G$ if an only if
+            Let $T = (u_1, \dots u_k) \in V^k$ be a $k$-tuple of vertices.
+            The elements of $T$ form a $k$-clique in $G$ if and only if
             $\{u_i, u_j\} \in E$ for all $1 \leq i < j \leq k$
             (note that this implies that all the elements are different,
-            since I are assuming that $G$ is a simple graph, with no loops). % todo check
+            since I am assuming that $G$ is a simple graph, with no loops).
             To encode this information into a boolean formula I consider
             the variables $x_i^u$ (for $u \in V$ and $i \in [k])$,
             representing whether $u_i = u$.
-            The above condition translates to 
+            Define
             \[
-                \text{``If } \{w_1, w_2\} \notin E \text{ for } w_1 \neq w_2 \in V,
-                \neg u_i^{w_j} \text{ for all } i \in [k] \text{, for at least one }
-                j \in \{1, 2\} \text{''}.
+                F \coloneqq \{(u, w) \in V^2 \mid \{u, w\} \notin E\}.
             \]
-            This is, each non-edge $e = \{x, y\}$ of $G$ (of which there are at most $\binom{n}{2}$)
-            introduces a condition on the variables of the form
+            Note that this includes the diagonal entries $(u, u)$.
+            The clique condition can then be expressed as
             \[
-                \left( \bigwedge_{i \in [k]} \neg u_i^x \right) \bigvee \left( \bigwedge_{i \in [k]} \neg u_i^y \right)
-                \equiv \bigwedge_{(i, j) \in [k]^2} (\neg u_i^x \lor \neg u_j^y) \eqqcolon \mathcal{C}_e.
-            \]
-            The full condition is thus equivalent to
-            \[
-                \mathcal{C} \coloneqq \bigwedge_{e \in \binom{V}{2} \setminus E} \mathcal{C}_{e},
+                  \mathcal{C} \coloneqq \bigwedge_{(u, w) \in F, (i, j) \in \binom{[k]}{2}} (\neg x_i^u \lor \neg x_j^w),
             \]
             which is in CNF.
             An assignment $V \times [k] \to \{0, 1\}$ represents a $k$-tuple of vertices if and only if
@@ -125,16 +118,17 @@
             I do this in two steps.
             First I introduce a formula that ensures \emph{at most} one vertex is selected for each entry:
             \[
-                \mathcal{B} \coloneqq \bigwedge_{\{x, y\} \in \binom{V}{2},\, i \in [k]} (\neg u_i^x \lor \neg u_i^y).
+                \mathcal{B} \coloneqq \bigwedge_{\{u, w\} \in \binom{V}{2},\, i \in [k]} (\neg x_i^u \lor \neg x_i^w).
             \]
             Then, I introduce the following other formula, which ensures \emph{at least} one vertex is selected
             for each entry.
             \[
-                \mathcal{A} \coloneqq \bigwedge_{i \in [k]} \left( \bigvee_{x \in V} u_i^x \right).
+                \mathcal{A} \coloneqq \bigwedge_{i \in [k]} \left( \bigvee_{u \in V} x_i^u \right).
             \]
             Formulas $\mathcal{A}, \mathcal{B}$ and $\mathcal{C}$
-            can clearly be obtained from $G$ in polynomial time.
-            Furthermore, there is a bijection from assignments
+            can clearly be obtained from $G$ (represented, for example, as an adjacency matrix)
+            in polynomial time.
+            Furthermore, there is a bijection between assignments
             $V \times [k] \to \{0, 1\}$ satisfying
             $\mathcal{A} \land \mathcal{B} \land \mathcal{C}$
             and ordered $k$-cliques in $G$.
