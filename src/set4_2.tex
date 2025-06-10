@@ -136,6 +136,28 @@
             $k$-cliques in $G$ in polynomial time.
             Then computing $N = N' / k!$ yields the actual number of $k$-cliques.
 
+        \newpage
+        \item We know that $\ph \subseteq \p^{\sharpp}$ (Toda's theorem).
+        What would be the consequences of the reverse inclusion $\p^{\sharpp} \subseteq \ph$?
+
+        \sol Suppose that $\p^{\sharpp} \subseteq \ph$.
+        I will argue that the polynomial hierarchy collapses to a finite level.
+        consider the language
+        \[
+            L = \{ \left< \mathcal{F}, k \right> \mid \mathcal{F} \text{ is a formula in CNF with less than } k \text{ solutions}\}.
+        \]
+        Clearly, $L \in \p^{\sharpp}$, since given $\left< \mathcal{F}, k \right>$ one
+        can count the number of solutions to $\mathcal{F}$ with a $\sharpsat$ oracle
+        call and then check whether this number is less than $k$, all in polynomial time.
+        By assumption, $L \in \ph$ and in particular $L \in \mathbf{\Sigma}^p_i$ for some $i \geq 0$.
+        Consider now another language $A \in \ph$.
+        By Toda's theorem, $A \in \p^{\sharpp} = \p^{\sharpsat}$.
+        Suppose that a machine $M$ decides $A$ in polynomial time with access to a $\sharpsat$ oracle.
+        I now argue that each call to the oracle can be replaced by a polynomial number of calls to a
+        machine $M'$ that decides $L$ (which can be done in polynomial time with access to a $\mathbf{\Sigma}^p_i$ oracle),
+        and therefore that $A \in \mathbf{\Delta}^p_{i+1}$, proving that $\ph = \mathbf{\Delta}^p_{i+1}$.
+        
+
     \end{enumerate}
 
 \end{document}
