@@ -153,10 +153,28 @@
         Consider now another language $A \in \ph$.
         By Toda's theorem, $A \in \p^{\sharpp} = \p^{\sharpsat}$.
         Suppose that a machine $M$ decides $A$ in polynomial time with access to a $\sharpsat$ oracle.
-        I now argue that each call to the oracle can be replaced by a polynomial number of calls to a
-        machine $M'$ that decides $L$ (which can be done in polynomial time with access to a $\mathbf{\Sigma}^p_i$ oracle),
-        and therefore that $A \in \mathbf{\Delta}^p_{i+1}$, proving that $\ph = \mathbf{\Delta}^p_{i+1}$.
-        
+        I now argue that each call to the $\sharpsat$ oracle can be replaced by a
+        polynomial-time computation with access to an oracle for $L$,
+        obtaining a machine $M'$ that decides $A$ in polynomial time with access to an oracle for $L$.
+        Therefore, $A \in \p^{L} \subseteq \p^{\mathbf{\Sigma}^p_i} = \mathbf{\Delta}^p_{i+1}$, proving that $\ph = \mathbf{\Delta}^p_{i+1}$.
+
+        Let us now see the promised reduction.
+        Suppose the computation of $M$ on input $x$ takes $p(|x|)$ steps,
+        where $p$ is a polynomial.
+        The number of variables in the formula $\mathcal{F}$ of an oracle call
+        in such a computation is at most $|\mathcal{F}| \leq |x| + p(|x|) = p'(|x|)$,
+        since the formula has to be written on the tape of the machine.
+        The number of solutions to $\mathcal{F}$ is at most $2^{p'(|x|)}$.
+        The exact number of solutions to $\mathcal{F}$ can be computed
+        by running binary search on the range $[0, 2^{p'(|x|)}]$,
+        taking $\mathcal{O}(\log(2^{p'(|x|)})) = \mathcal{O}(p'(|x|))$ iterations
+        and making a call to the oracle for $L$ in each iteration.
+        The number of steps of each iteration is in the order of the size of the integers that are being compared and operated on,
+        which is also $\mathcal{O}\left(\log(2^{p'(|x|)})\right) = \mathcal{O}\left(p'(|x|)\right)$.
+        All in all, the call to the oracle for $\sharpsat$ can be replaced by a computation
+        with access to an oracle for $L$ that takes $\mathcal{O}\left(p'(|x|)^2\right)$ steps,
+        and $M'$ runs in time $\mathcal{O} \left( p(|x|) p'(|x|)^2 \right)$,
+        justifying the claim that $A \in \p^{L}$.
 
     \end{enumerate}
 
